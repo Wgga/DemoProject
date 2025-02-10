@@ -1,0 +1,63 @@
+{
+  "app": {
+    "signingConfigs": [
+      {
+        "name": "default",
+        "type": "HarmonyOS",
+        "material": {
+          "certpath": "/Users/develop/.ohos/config/default_harmony_sysAXYABzHnp2zlCMaZeQ5slCc3V4ricupK-He1Nzfk=.cer",
+          "storePassword": "0000001BFD1A57F335339CF65ACFB048A1AC368E72C667D15C3E300F10A8FEB0FC4019A7DEC7F3B2F14463",
+          "keyAlias": "debugKey",
+          "keyPassword": "0000001BAA923E85CF5E1FADE76B38EE2FFDDDF96276339E098B561135629E468F4B60079655F9BBF1CDA8",
+          "profile": "/Users/develop/.ohos/config/default_harmony_sysAXYABzHnp2zlCMaZeQ5slCc3V4ricupK-He1Nzfk=.p7b",
+          "signAlg": "SHA256withECDSA",
+          "storeFile": "/Users/develop/.ohos/config/default_harmony_sysAXYABzHnp2zlCMaZeQ5slCc3V4ricupK-He1Nzfk=.p12"
+        }
+      }
+    ],
+    "products": [
+      {
+        "name": "default",
+        "signingConfig": "default",
+        "compatibleSdkVersion": "5.0.2(14)",
+        "runtimeOS": "HarmonyOS",
+        "buildOption": {
+          "strictMode": {
+            "caseSensitiveCheck": true,
+            "useNormalizedOHMUrl": true
+          }
+        }
+      }
+    ],
+    "buildModeSet": [
+      {
+        "name": "debug",
+      },
+      {
+        "name": "release"
+      }
+    ]
+  },
+  "modules": [
+    {
+      "name": "entry",
+      "srcPath": "./entry",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
+    },
+    //    {
+    //      "name": "react_native_weibo",
+    //      "srcPath": "./weibo"
+    //    },
+    //    {
+    //      "name": "react_native_huawei",
+    //      "srcPath": "./huawei",
+    //    }
+  ]
+}
