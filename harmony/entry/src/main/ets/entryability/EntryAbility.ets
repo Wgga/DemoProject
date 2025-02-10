@@ -15,6 +15,7 @@ export default class EntryAbility extends RNAbility {
   }
 
   onWindowStageCreate(windowStage: window.WindowStage): void {
+    super.onWindowStageCreate(windowStage);
     // 设置设备屏幕方向
     windowStage.getMainWindow().then((windowObj: window.Window) => {
       this.setWindowOrientation(windowObj, display.getFoldStatus());

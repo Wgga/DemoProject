@@ -40,7 +40,7 @@ function User({ navigation, route }: any): React.JSX.Element {
 	// 状态
 
 	return (
-		<View style={{ flex: 1, justifyContent: "center", alignItems: "center", paddingTop: insets.top }}>
+		<View style={{ flex: 1, paddingTop: insets.top }}>
 			<FlatList data={items.current} bounces={false}
 				showsVerticalScrollIndicator={false}
 				keyExtractor={(item) => item.id}
