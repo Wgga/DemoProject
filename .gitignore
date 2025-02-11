@@ -48,6 +48,7 @@ harmony/entry/src/main/resources/rawfile/*.hbc
 .vscode/
 .history/
 *.zip
+home-list-view/*
 
 # node.js
 #
