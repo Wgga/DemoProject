@@ -89,6 +89,7 @@ export struct HomeListView {
   @State listOffset: number[] = [0, 0, 0, 0] // 列表偏移量数据
   @State currentIndex: number = 0 // 当前tab索引
   @State isRefreshing: boolean = false // 是否刷新中
+  @State topOpacity: number = 0 // 顶部输入框透明度
   private scrollerForScroll: Scroller = new Scroller() // 外层滚动实例
   private scrollerForLists: ListScroller[] = [
     new ListScroller(),
@@ -167,18 +168,18 @@ export struct HomeListView {
     )
   }
 
-  // @Builder
-  // tabBuilder(index: number, name: string) {
-  //   Column() {
-  //     Text(name)
-  //       .fontSize(16)
-  //       .fontWeight(500)
-  //       .fontColor(this.currentIndex === index ? '#5763BD' : '#2E2E2E')
-  //   }
-  //   .width('100%')
-  //   .layoutWeight(1)
-  //   .justifyContent(FlexAlign.Center)
-  // }
+  @Builder
+  tabBuilder(tabName: string, tabIndex: number) {
+    Column() {
+      Text(tabName)
+        .fontSize(16)
+        .fontWeight(500)
+        .fontColor(this.currentIndex === tabIndex ? '#5763BD' : '#2E2E2E')
+    }
+    .width('100%')
+    .layoutWeight(1)
+    .justifyContent(FlexAlign.Center)
+  }
 
   @Builder
   listBuilder(tabName: string, tabIndex: number) {
@@ -190,7 +191,7 @@ export struct HomeListView {
                 Text(tabName + item.title)
                   .fontSize(15)
                   .fontWeight(500)
-                  .fontColor('#404040')
+                  .fontColor('#FFFFFF')
                   .maxLines(1)
                   .textOverflow({ overflow: TextOverflow.Ellipsis })
                   .margin({ top: 13 })
@@ -198,13 +199,14 @@ export struct HomeListView {
               .width('100%')
               .alignItems(HorizontalAlign.Start)
               .padding({ top: 0, right: 20, bottom: 25, left: 20 })
-              .border({ width: { top: 1 }, color: '#000' })
+              .border({ width: { top: 1 }, color: '#FFFFFF' })
             }
             .width('100%')
           }, (item: ListItemProps) => item.id)
       }
       .width('100%')
       .height('100%')
+      .backgroundColor('rgb(133, 162, 109)')
       .padding({ top: this.listOffset[tabIndex] })
       .edgeEffect(EdgeEffect.None)
       .scrollBar(BarState.Off)
@@ -214,76 +216,86 @@ export struct HomeListView {
       })
       .onReachEnd(() => this.loadMore())
     }
-    .tabBar(null)
+    .tabBar(this.tabBuilder(tabName, tabIndex))
   }
 
   build() {
     RNViewBase({ ctx: this.ctx, tag: this.tag }) {
       Refresh({ refreshing: $$this.isRefreshing }) {
-        Scroll(this.scrollerForScroll) {
-          Column()  {
-            // 滚动容器的顶部区
-            Column() {
-              // 轮播图
-              Swiper() {
-                ForEach(this.banner, (item: BannerProps, index: number) => {
-                  Column() {
-                    Text(item.title)
-                      .fontSize(19)
-                      .fontWeight('bold')
-                      .fontColor('#FFFFFF')
-                      .lineSpacing(LengthMetrics.px(1))
-                      .textOverflow({ overflow: TextOverflow.Ellipsis })
-                      .maxLines(1)
-                      .lineHeight(28)
-                      .textShadow({ radius: 8, color: '#595959' })
-                  }
-                  .width('100%')
-                  .height(273)
-                  .justifyContent(FlexAlign.Center)
-                  .alignItems(HorizontalAlign.Center)
-                  .backgroundColor('rgb(230, 183, 205)')
-                }, (item: BannerProps) => item.id)
-              }
-              .loop(true)
-              .autoPlay(true)
-              .interval(3000)
-              .indicator(
-                Indicator.dot()
-                  .right(0)
-                  .itemWidth(20)
-                  .itemHeight(2)
-                  .selectedItemWidth(20)
-                  .selectedItemHeight(2)
-                  .color('rgba(255,255,255,0.3)')
-                  .selectedColor('#FFFFFF')
-              )
-              .indicatorInteractive(false)
-            }
-            .width('100%')
+        Stack({ alignContent: Alignment.TopStart }) {
+          // 顶部输入框
+          Column() {
+            Row() {
+              Text('搜索香水、品牌、气味、帖子')
+                .fontSize(13)
+                .fontColor('#ADADAD')
 
-            // 滚动容器的底部列表区
-            Stack({ alignContent: Alignment.Top }) {
-              Row() {
-                ForEach(this.tabData, (tabName: string, tabIndex: number) => {
-                  Column() {
-                    Text(tabName)
-                      .fontColor(this.currentIndex === tabIndex ? '#5763BD' : '#2E2E2E')
-                      .fontSize(16)
-                      .fontWeight(500)
-                  }
-                  .width('100%')
-                  .layoutWeight(1)
-                  .justifyContent(FlexAlign.Center)
-                  .onClick(() => this.tabController.changeIndex(tabIndex))
-                }, (item: string) => item)
+              Text('\ue68c')
+                .fontSize(23)
+                .fontColor('#ADADAD')
+                .fontFamily('iconfont')
+            }
+            .width('85%')
+            .backgroundColor(this.topOpacity >= 0.7 ? 'rgba(235, 235, 235, 0.7)' : 'rgba(255, 255, 255, 0.7)')
+            .height(38)
+            .borderRadius(19)
+            .padding({ left: 16, right: 10 })
+            .justifyContent(FlexAlign.SpaceBetween)
+            .margin({ top: 6, bottom: 6 })
+          }
+          .width('100%')
+          .padding({ top: this.topRectHeight })
+          .justifyContent(FlexAlign.Center)
+          .backgroundColor(`rgba(255, 255, 255, ${this.topOpacity})`)
+          .zIndex(99)
+          .onClick(() => { })
+
+          // 滚动容器
+          Scroll(this.scrollerForScroll) {
+            Column()  {
+              // 滚动容器的顶部区
+              Column() {
+                // 轮播图
+                Swiper() {
+                  ForEach(this.banner, (item: BannerProps, index: number) => {
+                    Column() {
+                      Text(item.title)
+                        .fontSize(19)
+                        .fontWeight('bold')
+                        .fontColor('#FFFFFF')
+                        .lineSpacing(LengthMetrics.px(1))
+                        .textOverflow({ overflow: TextOverflow.Ellipsis })
+                        .maxLines(1)
+                        .lineHeight(28)
+                        .textShadow({ radius: 8, color: '#595959' })
+                    }
+                    .width('100%')
+                    .height(273)
+                    .justifyContent(FlexAlign.Center)
+                    .alignItems(HorizontalAlign.Center)
+                    .backgroundColor('rgb(230, 183, 205)')
+                  }, (item: BannerProps) => item.id)
+                }
+                .loop(true)
+                .autoPlay(true)
+                .interval(3000)
+                .indicator(
+                  Indicator.dot()
+                    .right(0)
+                    .itemWidth(20)
+                    .itemHeight(2)
+                    .selectedItemWidth(20)
+                    .selectedItemHeight(2)
+                    .color('rgba(255,255,255,0.3)')
+                    .selectedColor('#FFFFFF')
+                )
+                .indicatorInteractive(false)
               }
               .width('100%')
-              .height(72)
-              .padding({ top: 30 })
-              .zIndex(1)
-              .backgroundColor('#FFFFFF')
+              .height(500)
+              .backgroundColor('#F5F5F5')
 
+              // 滚动容器的底部列表区
               Tabs({ controller: this.tabController }) {
                 ForEach(this.tabData, (tabName: string, tabIndex: number) => {
                   if (this.listData && this.listData[tabIndex]) {
@@ -291,23 +303,27 @@ export struct HomeListView {
                   }
                 }, (item: string) => item)
               }
-              .margin({ top: 72 })
-              .barHeight(0)
-              .barWidth(0)
               .onAnimationStart((_index: number, targetIndex: number, _event: TabsAnimationEvent) => {
                 this.currentIndex = targetIndex;
               })
             }
             .width('100%')
-            .height('100%')
           }
+          .scrollBar(BarState.Off)
+          .onScrollFrameBegin((offset: number) => {
+            // 获取滑动距离
+            const yOffset: number = this.scrollerForScroll.currentOffset().yOffset
+            if ((yOffset - 273) < 273) {
+              this.topOpacity = (yOffset - 273) / 273
+            } else {
+              this.topOpacity = 1
+            }
+            console.log("HomeListView", yOffset, this.topOpacity)
+            return { offsetRemain: offset }
+          })
         }
         .width('100%')
         .height('100%')
-        .scrollBar(BarState.Off)
-        .onScrollFrameBegin((offset: number) => {
-          return { offsetRemain: offset }
-        })
       }
       .width('100%')
       .height(this.contentHeight)
