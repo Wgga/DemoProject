@@ -1,9 +1,8 @@
 import React from "react";
 
-import { View, Text, StyleSheet, Pressable, Button, useWindowDimensions, Dimensions, UIManager, findNodeHandle } from "react-native";
+import { View, Text, StyleSheet, Pressable, Button, useWindowDimensions, Dimensions, UIManager, findNodeHandle, TextInput, FlatList } from "react-native";
 
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import HomeListView from "home-list-view/HomeListViewNativeComponent";
 
 function Home({ navigation, route }: any): React.JSX.Element {
 
@@ -14,6 +13,32 @@ function Home({ navigation, route }: any): React.JSX.Element {
 	// 参数
 	// 变量
 	const [index, setIndex] = React.useState(0);
+	let items = React.useRef<any[]>([
+		{ id: 1, text: "孔" },
+		{ id: 2, text: "曹" },
+		{ id: 3, text: "严" },
+		{ id: 4, text: "华" },
+		{ id: 5, text: "金" },
+		{ id: 6, text: "魏" },
+		{ id: 7, text: "陶" },
+		{ id: 8, text: "姜" },
+		{ id: 9, text: "戚" },
+		{ id: 10, text: "谢" },
+		{ id: 11, text: "邹" },
+		{ id: 12, text: "喻" },
+		{ id: 13, text: "柏" },
+		{ id: 14, text: "水" },
+		{ id: 15, text: "窦" },
+		{ id: 16, text: "章" },
+		{ id: 17, text: "云" },
+		{ id: 18, text: "苏" },
+		{ id: 19, text: "潘" },
+		{ id: 20, text: "葛" },
+		{ id: 21, text: "奚" },
+		{ id: 22, text: "范" },
+		{ id: 23, text: "彭" },
+		{ id: 24, text: "郎" },
+	])
 	// 数据
 	const [routes] = React.useState([
 		{ key: "tab1", title: "Tab1" },
@@ -66,36 +91,34 @@ function Home({ navigation, route }: any): React.JSX.Element {
 	const [isrender, setIsRender] = React.useState<boolean>(false);
 
 	return (
-		<View style={{ flex: 1, backgroundColor: "#fff" }}>
-			<HomeListView ref={listRef}
-				src="home"
-				contentHeight={JSON.stringify(724.84)}
-				tabData={["最新", "专题", "寻味", "知识"]}
-				onLoadEnd={(ev: any) => {
-					UIManager.dispatchViewManagerCommand(
-						findNodeHandle(listRef.current),
-						"setArticleListData",
-						[]
+		<View style={{ flex: 1, paddingTop: insets.top }}>
+			<Text>Bug: 首次进入Tab页面，频繁切换Tab，然后进入点击列表item进入详情页，点击详情页空白处会触发键盘弹起</Text>
+			<FlatList data={items.current} bounces={false}
+				showsVerticalScrollIndicator={false}
+				keyExtractor={(item) => item.id}
+				renderItem={({ item }) => {
+					return (
+						<Pressable style={styles.list_item} onPress={() => {
+							navigation.navigate("Page", { screen: "Detail2", params: { title: item.text } });
+						}}>
+							<Text>{item.text}</Text>
+						</Pressable>
 					)
-					console.log("%c Line:1001 🍇 onLoadEnd", "color:#33a5ff", ev.nativeEvent);
-				}}
-				onReachEnd={(ev: any) => {
-					UIManager.dispatchViewManagerCommand(
-						findNodeHandle(listRef.current),
-						"loadMoreArticleListData",
-						[]
-					)
-					console.log("%c Line:1008 🍩 onReachEnd", "color:#3f7cff", ev.nativeEvent);
-				}}
-				onGotoDetail={(ev: any) => {
-					console.log("%c Line:1016 🍪 onGotoDetail", "color:#f5ce50", ev.nativeEvent);
-				}}
-			/>
+				}} />
 		</View>
 	)
 }
 
 const styles = StyleSheet.create({
+	list_item: {
+		width: "100%",
+		justifyContent: "center",
+		alignItems: "center",
+		padding: 50,
+		borderWidth: 1,
+		borderColor: "#000",
+		borderBottomWidth: 0,
+	}
 });
 
 export default Home;

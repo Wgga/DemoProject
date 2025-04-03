@@ -12,22 +12,13 @@ import {
 } from '@rnoh/react-native-openharmony'
 import { createRNPackages } from '../RNPackagesFactory'
 
-import { HomeListView } from './HomeListView';
-
 @Builder
 export function buildCustomRNComponent(ctx: ComponentBuilderContext) {
-  if (ctx.componentName === HomeListView.NAME) {
-    HomeListView({
-      ctx: ctx.rnComponentContext,
-      tag: ctx.tag
-    })
-  }
 }
 
 const wrappedCustomRNComponentBuilder = wrapBuilder(buildCustomRNComponent)
 
 const arkTsComponentNames: Array<string> = [
-  HomeListView.NAME,
 ]
 const fonts: Record<string, Resource> = {
   // "iconfont": $rawfile("fonts/iconfont.ttf")

@@ -18,7 +18,7 @@ function Route(): React.JSX.Element {
 		React.useCallback(() => {
 			// 监听路由变化改变状态栏颜色
 			const urlRegex = [
-				"User",
+				"",
 			];
 			// 监听Android物理返回按键
 			const unsubscribe = navigation.addListener("state", () => {
