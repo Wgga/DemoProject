@@ -92,7 +92,7 @@ function Home({ navigation, route }: any): React.JSX.Element {
 
 	return (
 		<View style={{ flex: 1, paddingTop: insets.top }}>
-			<Text>Bug: 首次进入Tab页面，频繁切换Tab，然后进入点击列表item进入详情页，点击详情页空白处会触发键盘弹起</Text>
+			<Text>Bug: 首次进入Tab页面，频繁切换Tab，然后点击下方列表item进入详情页，点击详情页任意位置（非输入框位置）会先触发键盘弹起</Text>
 			<FlatList data={items.current} bounces={false}
 				showsVerticalScrollIndicator={false}
 				keyExtractor={(item) => item.id}
