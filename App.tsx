@@ -12,7 +12,6 @@ import { NavigationContainer } from "@react-navigation/native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import Route from "./src/navigations/route";
-import { ModalPortal } from "./src/modals";
 
 function App(): React.JSX.Element {
 
@@ -22,7 +21,6 @@ function App(): React.JSX.Element {
 				<NavigationContainer>
 					<Route />
 				</NavigationContainer>
-				<ModalPortal />
 			</React.Fragment>
 		</SafeAreaProvider>
 	);
