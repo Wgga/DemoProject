@@ -4,6 +4,8 @@
 #include "ViewPagerPackage.h"
 #include "ReanimatedPackage.h"
 #include "SafeAreaViewPackage.h"
+#include "SVGPackage.h"
+
 
 using namespace rnoh;
 
@@ -14,5 +16,6 @@ std::vector<std::shared_ptr<Package>> PackageProvider::getPackages(Package::Cont
         std::make_shared<ViewPagerPackage>(ctx),
         std::make_shared<ReanimatedPackage>(ctx),
         std::make_shared<SafeAreaViewPackage>(ctx),
+        std::make_shared<SVGPackage>(ctx),
     };
 }

@@ -10,15 +10,27 @@ import {
   TraceJSBundleProviderDecorator,
   RNOHCoreContext
 } from '@rnoh/react-native-openharmony'
+import { ImmersiveMode, LevelMode } from '@kit.ArkUI'
 import { createRNPackages } from '../RNPackagesFactory'
+import { SplashScreenPage } from './SplashScreenPage'
+import { SplashDataProps, SplashScreen } from '../model/SplashScreen'
+import StorageUtils from '../utils/StorageUtils'
+import { ShadowImage, SHADOW_IMAGE_NAME } from './ShadowImage'
 
 @Builder
 export function buildCustomRNComponent(ctx: ComponentBuilderContext) {
+  if (ctx.componentName === SHADOW_IMAGE_NAME) {
+    ShadowImage({
+      ctx: ctx.rnComponentContext,
+      tag: ctx.tag
+    })
+  }
 }
 
 const wrappedCustomRNComponentBuilder = wrapBuilder(buildCustomRNComponent)
 
 const arkTsComponentNames: Array<string> = [
+	SHADOW_IMAGE_NAME,
 ]
 const fonts: Record<string, Resource> = {
   // "iconfont": $rawfile("fonts/iconfont.ttf")
@@ -29,7 +41,15 @@ const fonts: Record<string, Resource> = {
 struct Index {
   @StorageLink('RNOHCoreContext') private rnohCoreContext: RNOHCoreContext | undefined = undefined
   @State shouldShow: boolean = false
+  @StorageProp("screenHeight") screenHeight: number = 0; // 设备宽度
+  @StorageProp("topRectHeight") topRectHeight: number = 0; // 顶部安全距离
   private logger!: RNOHLogger
+  private uiContext: UIContext = this.getUIContext();
+
+  @Builder
+  Splash() {
+    SplashScreenPage()
+  }
 
   aboutToAppear(): void {
     this.logger = this.rnohCoreContext!.logger.clone("Index")
@@ -37,6 +57,35 @@ struct Index {
 
     this.shouldShow = true
     stopTracing()
+    this.showSplash();
+  }
+
+  /**
+   * 打开启动页
+   */
+  showSplash() {
+    this.uiContext.getPromptAction().openCustomDialog({
+      builder: () => this.Splash(),
+      alignment: DialogAlignment.Bottom,
+      autoCancel: false,
+      isModal: false,
+      width: '100%',
+      height: this.screenHeight,
+      cornerRadius: 0,
+      transition: TransitionEffect.OPACITY.animation({ duration: 300 }),
+      offset: { dx: 0, dy: -this.topRectHeight },
+      levelMode: LevelMode.OVERLAY, // 启用页面级弹出框
+      immersiveMode: ImmersiveMode.EXTEND, // 设置页面级弹出框蒙层的显示模式
+    }).then((dialogId: number) => this.closeSplash(dialogId))
+  }
+  /**
+   * 延时关闭启动页
+   */
+  closeSplash(dialogId: number): void {
+    setTimeout(()=>{
+      this.uiContext.getPromptAction().closeCustomDialog(dialogId);
+      SplashScreen.cacheSplashImage();
+    }, SplashScreen.duration);
   }
 
   onBackPress(): boolean | undefined {

@@ -1,14 +1,23 @@
 import React from "react";
 
-import { View, Text, StyleSheet, Pressable, FlatList } from "react-native";
+import { View, Text, StyleSheet, Pressable, FlatList, Image } from "react-native";
 
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import ShadowImage from "@react-native-hmos/nosetime-shadow-image";
+
+import Analysis from "../assets/analysis.svg";
+import Bottle1 from "../assets/bottle1.svg";
 
 function Home({ navigation, route }: any): React.JSX.Element {
 
 	// 控件
 	const insets = useSafeAreaInsets();
 	// 参数
+	let imageList = [
+		{ name: "brand.jpg", url: require("../assets/brand.jpg") },
+		{ name: "default_avatar.png", url: require("../assets/default_avatar.png") },
+		{ name: "lottery.gif", url: require("../assets/lottery.gif") },
+	]
 	// 变量
 	let items = React.useRef<any[]>([
 		{ id: 1, text: "孔" },
@@ -39,32 +48,59 @@ function Home({ navigation, route }: any): React.JSX.Element {
 
 	return (
 		<View style={{ flex: 1, paddingTop: insets.top }}>
-			<Text>Bug: 键盘顶不起输入框</Text>
-			<FlatList data={items.current} bounces={false}
-				showsVerticalScrollIndicator={false}
-				keyExtractor={(item) => item.id}
-				renderItem={({ item }) => {
-					return (
-						<Pressable style={styles.list_item} onPress={() => {
-							navigation.navigate("Page", { screen: "Detail2", params: { title: item.text } });
-						}}>
-							<Text>{item.text}</Text>
-						</Pressable>
-					)
-				}} />
+			<Text>咨询问题：在使用react-native bundle-harmony --dev打包RN项目时/src/assets目录下png/jpg/gif图片都能打包进harmony/entry/src/main/resources/rawfile目录下，svg图片打包不进去, 导致鸿蒙侧渲染不出来</Text>
+			<View style={{ marginVertical: 20 }}>
+				<Text>RN侧渲染</Text>
+				<View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+					<View style={styles.img_con}>
+						<Analysis width={100} height={100} />
+						<Text>{"analysis.svg"}</Text>
+					</View>
+					{imageList.map((item, index) => <View key={item.name} style={styles.img_con}>
+						<Image source={item.url} style={{ width: 100, height: 100 }} />
+						<Text>{item.name}</Text>
+					</View>)}
+				</View>
+			</View>
+			<View>
+				<Text>鸿蒙侧渲染（使用的是TurboModule自定义组件）</Text>
+				<View style={{ flexDirection: "row", flexWrap: "wrap", width: "100%" }}>
+					<View style={[styles.img_con, { width: 100, height: 100 }]}>
+						<ShadowImage style={{ flex: 1 }}
+							ImageConfig={{
+								source: "analysis.svg",
+								width: "100",
+								height: "100",
+								resizeMode: "contain",
+							}}
+						/>
+						<Text>{"analysis.svg"}</Text>
+					</View>
+					{imageList.map((item, index) => <View key={item.name}
+						style={styles.img_con}>
+						<ShadowImage style={{ flex: 1 }}
+							ImageConfig={{
+								source: item.name,
+								width: "100",
+								height: "100",
+								resizeMode: "cover",
+							}}
+						/>
+						<Text>{item.name}</Text>
+					</View>)}
+				</View>
+			</View>
 		</View>
 	)
 }
 
 const styles = StyleSheet.create({
-	list_item: {
-		width: "100%",
-		justifyContent: "center",
+	img_con: {
+		width: 120,
+		height: 120,
 		alignItems: "center",
-		padding: 50,
-		borderWidth: 1,
-		borderColor: "#000",
-		borderBottomWidth: 0,
+		margin: 5,
+		borderWidth: 1
 	}
 });
 

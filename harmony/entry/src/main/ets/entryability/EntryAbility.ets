@@ -1,13 +1,17 @@
 import { RNAbility } from '@rnoh/react-native-openharmony';
 
-import { display, window } from '@kit.ArkUI';
-import { AbilityConstant, Want } from '@kit.AbilityKit';
+import { display, router, window } from '@kit.ArkUI';
+import { Want } from '@kit.AbilityKit';
 import { BusinessError, deviceInfo } from '@kit.BasicServicesKit';
 
-export default class EntryAbility extends RNAbility {
+import { SplashScreen } from '../model/SplashScreen';
+import { MMKV } from '@tencent/mmkv';
 
+export default class EntryAbility extends RNAbility {
   onCreate(want: Want) {
     super.onCreate(want)
+    let appCtx = this.context.getApplicationContext();
+    MMKV.initialize(appCtx);
   }
 
   getPagePath() {
@@ -16,6 +20,8 @@ export default class EntryAbility extends RNAbility {
 
   onWindowStageCreate(windowStage: window.WindowStage): void {
     super.onWindowStageCreate(windowStage);
+    // 设置启动页图片
+    SplashScreen.setSplashImage();
     // 设置设备屏幕方向
     windowStage.getMainWindow().then((windowObj: window.Window) => {
       this.setWindowOrientation(windowObj, display.getFoldStatus());
@@ -26,12 +32,13 @@ export default class EntryAbility extends RNAbility {
     })
     // 获取设备安全区域距离
     windowStage.loadContent(this.getPagePath(), (err) => {
-      if (err.code) return;
+      if (err.code) {
+        return;
+      }
       // 获取应用主窗口
       let windowClass: window.Window = windowStage.getMainWindowSync();
       // 1. 设置窗口全屏
-      let isLayoutFullScreen = true;
-      windowClass.setWindowLayoutFullScreen(isLayoutFullScreen);
+      windowClass.setWindowLayoutFullScreen(true);
 
       // 2. 获取布局避让遮挡的区域
       // 获取顶部状态栏区域的高度
@@ -55,16 +62,24 @@ export default class EntryAbility extends RNAbility {
           AppStorage.setOrCreate('bottomRectHeight', px2vp(bottomRectHeight));
         }
       });
+
+      // 监听可视区域变化获取设备宽度
+      windowClass.on("windowSizeChange", (size: window.Size) => {
+        AppStorage.setOrCreate('screenWidth', px2vp(size.width));
+        AppStorage.setOrCreate('screenHeight', px2vp(size.height));
+      })
     })
   }
 
   // 设置设备屏幕方向
   private setWindowOrientation(windowObj: window.Window, foldStatus: display.FoldStatus) {
     // 判断是否为折叠屏的展开态/平板设备
-    const isExpandedOrTablet: boolean = (foldStatus === display.FoldStatus.FOLD_STATUS_EXPANDED || deviceInfo.deviceType == "tablet");
-    const orientation: window.Orientation = isExpandedOrTablet ? window.Orientation.AUTO_ROTATION_RESTRICTED : window.Orientation.PORTRAIT;
+    const isExpandedOrTablet: boolean =
+      (foldStatus === display.FoldStatus.FOLD_STATUS_EXPANDED || deviceInfo.deviceType == "tablet");
+    const orientation: window.Orientation =
+      isExpandedOrTablet ? window.Orientation.AUTO_ROTATION_RESTRICTED : window.Orientation.PORTRAIT;
     try {
-      windowObj?.setPreferredOrientation(orientation, (err: BusinessError)=>{
+      windowObj?.setPreferredOrientation(orientation, (err: BusinessError) => {
         if (err.code) {
           console.error(`Failed to set window orientation. Cause code: ${err.code}, message: ${err.message}`);
           return;

@@ -1,6 +1,9 @@
 const { getDefaultConfig, mergeConfig } = require('@react-native/metro-config');
 const { createHarmonyMetroConfig } = require('@react-native-oh/react-native-harmony/metro.config');
 
+const defaultConfig = getDefaultConfig(__dirname);
+const { assetExts, sourceExts } = defaultConfig.resolver;
+
 /**
  * Metro configuration
  * https://facebook.github.io/metro/docs/configuration
@@ -9,6 +12,7 @@ const { createHarmonyMetroConfig } = require('@react-native-oh/react-native-harm
  */
 const config = {
 	transformer: {
+		babelTransformerPath: require.resolve("react-native-svg-transformer/react-native"),
 		getTransformOptions: async () => ({
 			transform: {
 				experimentalImportSupport: false,
@@ -16,6 +20,10 @@ const config = {
 			},
 		}),
 	},
+	resolver: {
+		assetExts: assetExts.filter(ext => ext !== "svg"),
+		sourceExts: [...sourceExts, "svg"],
+	}
 };
 
 module.exports = mergeConfig(getDefaultConfig(__dirname), createHarmonyMetroConfig({
