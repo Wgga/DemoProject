@@ -12,6 +12,7 @@
     "codegen": "react-native codegen-harmony --cpp-output-path ./harmony/entry/src/main/cpp/generated --rnoh-module-path ./harmony/entry/oh_modules/@rnoh/react-native-openharmony"
   },
   "dependencies": {
+    "@react-native-hmos/nosetime-home-list": "file:plugins/react-native-hmos-nosetime-home-list-1.0.0.tgz",
     "@react-native-hmos/nosetime-shadow-image": "file:plugins/react-native-hmos-nosetime-shadow-image-1.0.0.tgz",
     "@react-native-oh-tpl/elements": "^1.3.21-0.1.4",
     "@react-native-oh-tpl/native-stack": "^6.9.26-0.0.2",

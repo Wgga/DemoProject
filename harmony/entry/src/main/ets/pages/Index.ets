@@ -16,6 +16,7 @@ import { SplashScreenPage } from './SplashScreenPage'
 import { SplashDataProps, SplashScreen } from '../model/SplashScreen'
 import StorageUtils from '../utils/StorageUtils'
 import { ShadowImage, SHADOW_IMAGE_NAME } from './ShadowImage'
+import { HomeList, HOME_LIST_NAME } from './HomeList'
 
 @Builder
 export function buildCustomRNComponent(ctx: ComponentBuilderContext) {
@@ -25,12 +26,19 @@ export function buildCustomRNComponent(ctx: ComponentBuilderContext) {
       tag: ctx.tag
     })
   }
+  if (ctx.componentName === HOME_LIST_NAME) {
+    HomeList({
+      ctx: ctx.rnComponentContext,
+      tag: ctx.tag
+    })
+  }
 }
 
 const wrappedCustomRNComponentBuilder = wrapBuilder(buildCustomRNComponent)
 
 const arkTsComponentNames: Array<string> = [
-	SHADOW_IMAGE_NAME,
+  SHADOW_IMAGE_NAME,
+  HOME_LIST_NAME,
 ]
 const fonts: Record<string, Resource> = {
   // "iconfont": $rawfile("fonts/iconfont.ttf")
@@ -78,11 +86,12 @@ struct Index {
       immersiveMode: ImmersiveMode.EXTEND, // 设置页面级弹出框蒙层的显示模式
     }).then((dialogId: number) => this.closeSplash(dialogId))
   }
+
   /**
    * 延时关闭启动页
    */
   closeSplash(dialogId: number): void {
-    setTimeout(()=>{
+    setTimeout(() => {
       this.uiContext.getPromptAction().closeCustomDialog(dialogId);
       SplashScreen.cacheSplashImage();
     }, SplashScreen.duration);
