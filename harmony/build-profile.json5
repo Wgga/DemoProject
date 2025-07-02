@@ -5,13 +5,13 @@
         "name": "default",
         "type": "HarmonyOS",
         "material": {
-          "certpath": "/Users/develop/.ohos/config/default_harmony_sysAXYABzHnp2zlCMaZeQ5slCc3V4ricupK-He1Nzfk=.cer",
-          "storePassword": "0000001BFD1A57F335339CF65ACFB048A1AC368E72C667D15C3E300F10A8FEB0FC4019A7DEC7F3B2F14463",
+          "certpath": "/Users/develop/.ohos/config/default_harmony_j-9MZBkI8JdUTiEQmKaXZQ1gj2CJNuQzhBTkcPFQ6d0=.cer",
           "keyAlias": "debugKey",
-          "keyPassword": "0000001BAA923E85CF5E1FADE76B38EE2FFDDDF96276339E098B561135629E468F4B60079655F9BBF1CDA8",
-          "profile": "/Users/develop/.ohos/config/default_harmony_sysAXYABzHnp2zlCMaZeQ5slCc3V4ricupK-He1Nzfk=.p7b",
+          "keyPassword": "0000001BAB8BBE21B1FDD7E7B5B517DDA07898F5F2A5E953F57AC3B7748A86B8C8C299FCA41B48C879CEFB",
+          "profile": "/Users/develop/.ohos/config/default_harmony_j-9MZBkI8JdUTiEQmKaXZQ1gj2CJNuQzhBTkcPFQ6d0=.p7b",
           "signAlg": "SHA256withECDSA",
-          "storeFile": "/Users/develop/.ohos/config/default_harmony_sysAXYABzHnp2zlCMaZeQ5slCc3V4ricupK-He1Nzfk=.p12"
+          "storeFile": "/Users/develop/.ohos/config/default_harmony_j-9MZBkI8JdUTiEQmKaXZQ1gj2CJNuQzhBTkcPFQ6d0=.p12",
+          "storePassword": "0000001BEED00EA165B84624122ABDAB158418189DB76C70685798C7EDB3D040AFC4235304B8CC4EA04888"
         }
       }
     ],

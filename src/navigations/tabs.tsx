@@ -21,6 +21,7 @@ function Tabs({ navigation, route }: any): React.JSX.Element {
 				tabBarStyle: {
 					shadowColor: "transparent",
 					borderColor: "transparent",
+					display: "none",
 					// height: 56,
 				},
 				tabBarItemStyle: {

@@ -1,19 +1,15 @@
 import React from "react";
 
-import { View, Text, StyleSheet, Pressable, FlatList, Image, useWindowDimensions, UIManager, findNodeHandle } from "react-native";
+import { View, Text, StyleSheet, useWindowDimensions } from "react-native";
 
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import ShadowImage from "@react-native-hmos/nosetime-shadow-image";
-
-import Analysis from "../assets/svg/analysis.svg";
-import Bottle1 from "../assets/svg/bottle1.svg";
-import HomeList from "@react-native-hmos/nosetime-home-list";
+import Carousel from "react-native-reanimated-carousel";
 
 function Home({ navigation, route }: any): React.JSX.Element {
 
 	// 控件
 	const insets = useSafeAreaInsets();
-	const { height } = useWindowDimensions();
+	const { width, height } = useWindowDimensions();
 	const listRef = React.useRef<any>(null);
 	// 参数
 	const items = [
@@ -69,68 +65,65 @@ function Home({ navigation, route }: any): React.JSX.Element {
 		{ "id": 50, "name": "韦", "up": "6" },
 	]
 	// 变量
-	let index = React.useRef<number>(0);
-	let list = React.useRef<any[]>([]);
-	let morelist = React.useRef<any[]>([]);
-	let noMore = React.useRef<boolean>(false);
-
-	React.useEffect(() => {
-		list.current = [...items]; morelist.current = list.current.splice(12, 1000);
-		setListData();
-	}, [])
-
-	const setListData = () => {
-		if (list.current.length > 0) {
-			UIManager.dispatchViewManagerCommand(
-				findNodeHandle(listRef.current),
-				"setListData",
-				[{ items: list.current, noMore: noMore.current }]
-			)
-		}
-	}
-
-	// 加载下一页
-	const onReachEnd = ({ nativeEvent }: any) => {
-		if (morelist.current) {
-			let morelist2 = [];
-			morelist2.push(...morelist.current.slice(index.current * 12, index.current * 12 + 12))
-			index.current++;
-			list.current = list.current.concat(morelist2);
-			noMore.current = (morelist2.length < 10);
-			setTimeout(() => setListData(), 1000);
-		}
-	}
-
-	// 点击事件
-	const onClick = ({ nativeEvent: { type, data } }: any) => {
-		const params = JSON.parse(data);
-		if (type === "postDiscussUp") {
-			if (params.type === 1) {
-				const index = list.current.findIndex((item: any) => item.id === params.item.id);
-				list.current[index].up = (Number(list.current[index].up) + 1).toString();
-				UIManager.dispatchViewManagerCommand(
-					findNodeHandle(listRef.current),
-					"setItemUp",
-					[list.current[index]]
-				)
-			}
-		}
-	}
 
 	return (
-		<View style={{ flex: 1, paddingTop: insets.top }}>
-			<Text>咨询问题：RN框架下使用Fabric自定义组件渲染的列表，点击点赞按钮对应的up值增加，当滑动到底部加载下一页时，点击第二页任意一个点赞按钮对应的up值能正常增加，这时点击上一页的某个点赞按钮时对应的up数值不会增加了</Text>
-			<HomeList ref={listRef} style={{ flex: 1 }}
-				contentHeight={JSON.stringify(height - (insets.bottom + 48))}
-				tabData={[""]}
-				onReachEnd={onReachEnd}
-				onClick={onClick}
-			/>
+		<View style={styles.container}>
+			<Text style={{ marginTop: insets.top }}>{"问题描述：RN框架在【@rnoh/react-native-openharmony】0.72.70以上版本下使用react-native-reanimated-carousel组件，轮播图滑动手势有问题，在部分区域滑动手势不可用, 红线框为轮播图整个容器区域"}</Text>
+			<View style={{ marginBottom: insets.bottom + 73 }}>
+				<View style={[StyleSheet.absoluteFillObject, { zIndex: 0 }]}>
+					<View style={[styles.region, styles.top]}>
+						<Text>{"在此区域轮播图滑动手势不可用"}</Text>
+					</View>
+					<View style={styles.region}>
+						<Text>{"在此区域轮播图滑动手势可用"}</Text>
+					</View>
+				</View>
+				<Carousel key={width}
+					width={width}
+					data={items}
+					defaultIndex={0}
+					autoPlayInterval={3000}
+					scrollAnimationDuration={500}
+					autoPlay={false}
+					autoFillData
+					loop={false}
+					style={styles.carousel}
+					renderItem={({ item, index }: any) => (
+						<View style={[styles.item, index % 2 == 0 && { backgroundColor: "rgba(178, 128, 225, 0.8)" }]}>
+							<Text>{item.id} {item.name}</Text>
+						</View>
+					)}
+				/>
+			</View>
 		</View>
 	)
 }
 
 const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+	},
+	carousel: {
+		borderWidth: 1,
+		borderColor: "red",
+	},
+	item: {
+		width: "100%",
+		height: 200,
+		alignItems: "center",
+		justifyContent: "center",
+		backgroundColor: "rgba(255, 192, 203, 0.8)",
+	},
+	region: {
+		flex: 1,
+		borderWidth: 1,
+		alignItems: "center",
+		justifyContent: "center"
+	},
+	top: {
+		flex: 1.4,
+		borderBottomWidth: 0,
+	},
 });
 
 export default Home;
